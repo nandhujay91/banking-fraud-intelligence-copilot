@@ -1,5 +1,4 @@
-@'
-# Python
+﻿# Python
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -10,11 +9,12 @@ __pycache__/
 .env.*
 !.env.example
 
-# Data
-data/raw/*
-data/interim/*
-data/processed/*
-data/reference/*
+# Data files
+data/raw/
+data/interim/
+data/processed/
+data/splits/
+data/reference/
 
 # Testing
 .pytest_cache/
@@ -34,4 +34,3 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
-'@ | Set-Content .gitignore
