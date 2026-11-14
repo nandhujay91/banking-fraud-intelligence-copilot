@@ -1,0 +1,12 @@
+{
+    "threshold": 0.9521173238754272,
+    "selection_metric": "validation_f1",
+    "features": [
+        "type",
+        "amount",
+        "log_amount"
+    ],
+    "target": "isFraud",
+    "scale_pos_weight": 1271.667728914383,
+    "excluded_feature": "oldbalanceOrg"
+}
