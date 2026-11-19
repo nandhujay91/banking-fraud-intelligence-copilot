@@ -2,7 +2,7 @@
 
 An end-to-end banking fraud analytics and intelligence platform designed to support fraud analysts through data engineering, machine learning, explainable AI, retrieval-augmented generation (RAG), and multi-agent orchestration.
 
-**Project Status:** In Development — Phases 1–3 Completed
+**Project Status:** In Development — Phases 1–5 Completed; Phase 6 In Progress.
 
 ---
 
@@ -14,6 +14,7 @@ Banking Fraud Intelligence Copilot is an analytical decision-support prototype t
 - Identify potentially suspicious transactions.
 - Understand machine learning fraud predictions.
 - Explore fraud trends through SQL analytics.
+- Explain model predictions using explainable AI.
 - Retrieve relevant fraud investigation knowledge.
 - Interact with fraud analytics using natural language.
 
@@ -62,14 +63,18 @@ The raw dataset and generated Parquet files are excluded from Git because of the
 | Query and analytics | SQL |
 | Machine learning | Scikit-learn, XGBoost |
 | Explainable AI | SHAP |
-| Backend | FastAPI |
-| Generative AI | Azure OpenAI (planned) |
-| Vector search | Azure AI Search (planned) |
+| Local LLM | Ollama, Qwen2.5 3B |
+| Embeddings | nomic-embed-text |
+| Document processing | pypdf, python-docx |
+| HTTP client | httpx |
+| Vector database | PostgreSQL + pgvector (planned) |
+| Backend | FastAPI (planned) |
 | Frontend | React (planned) |
-| Monitoring | Grafana, Prometheus |
+| Monitoring | Grafana, Prometheus (planned) |
 | Testing | Pytest |
 | Code quality | Ruff |
-| Deployment | Docker, Azure (planned) |
+| Containerisation | Docker (planned) |
+| Cloud deployment | Azure (planned) |
 
 Technologies marked as planned will be introduced in their respective project phases.
 
@@ -95,6 +100,7 @@ Technologies marked as planned will be introduced in their respective project ph
 - Transaction data validation.
 - Feature engineering pipeline.
 - Log transformation of transaction amounts.
+- Chunk-based CSV processing.
 - Parquet-based processed data storage.
 - Feature data contract and specification.
 - Feature quality validation.
@@ -125,50 +131,127 @@ The split uses transaction simulation steps, with training data from steps 1–5
 - Temporal fraud analysis.
 - SQL analytics documentation.
 
+### Phase 4 — Fraud Detection Machine Learning
+
+**Status: Completed — Initial Model Development and Evaluation**
+
+- Logistic Regression baseline model.
+- XGBoost fraud detection model.
+- Class imbalance handling.
+- Chronological training, validation and testing.
+- Precision, recall, F1-score, PR-AUC and ROC-AUC evaluation.
+- Threshold analysis.
+- Feature ablation experiments.
+- Temporal performance analysis.
+- False-negative investigation.
+
+**XGBoost test-set results:**
+
+| Metric | Result |
+|---|---:|
+| Precision | 0.7964 |
+| Recall | 0.8458 |
+| F1-score | 0.8203 |
+| PR-AUC | 0.9151 |
+| ROC-AUC | 0.9991 |
+| Accuracy | 0.9968 |
+
+The selected threshold was 0.939572, chosen based on validation F1-score among the tested thresholds.
+
+These results are specific to the synthetic PaySim dataset and should not be interpreted as expected performance on real banking transactions.
+
+### Phase 5 — Explainable AI and Model Validation
+
+**Status: Completed — Initial Analysis**
+
+- SHAP TreeExplainer implementation.
+- Global feature importance analysis.
+- Individual transaction prediction explanations.
+- Fraud false-negative investigation.
+- Feature ablation and comparison.
+- Duplicate-pattern analysis across chronological splits.
+- Model performance analysis by transaction type.
+- Threshold sensitivity analysis.
+- Temporal performance investigation.
+
+SHAP explanations help investigate how individual features contribute to model predictions. They do not establish that a transaction is genuinely fraudulent or explain real-world causation.
+
+### Phase 6 — RAG Knowledge Platform
+
+**Status: In Progress**
+
+**Implemented:**
+
+- Local Ollama infrastructure.
+- Qwen2.5 3B local language model integration.
+- Python HTTP client for LLM interaction.
+- PDF, DOCX and TXT document extraction.
+- Document metadata generation.
+- SHA-256 document checksum.
+- JSON-based document registry.
+- Duplicate document detection.
+- Document ingestion workflow.
+- Character-based text chunking with overlap.
+- Local embedding model integration using `nomic-embed-text`.
+- Single and batch embedding generation.
+- Embedding validation and error handling.
+- Unit tests for LLM, ingestion, document processing, chunking and embeddings.
+
+**Pending:**
+
+- PostgreSQL pgvector installation and configuration.
+- Vector database schema and embedding storage.
+- Similarity search and top-K retrieval.
+- Metadata-filtered retrieval.
+- Retrieval quality evaluation.
+- Grounded LLM responses with source citations.
+- RAG evaluation and reliability testing.
+
+The current embedding client generates 768-dimensional vectors. Vector storage and retrieval have not yet been implemented.
+
 ### Upcoming Phases
 
 | Phase | Description | Status |
 |---|---|---|
-| 4 | Fraud Detection Machine Learning | Planned |
-| 5 | Explainable AI | Planned |
-| 6 | RAG Knowledge Platform | Planned |
 | 7 | Multi-Agent Fraud Intelligence Copilot | Planned |
 | 8 | Backend API and Frontend | Planned |
-| 9 | Testing and Security | Planned |
+| 9 | Testing, Security and Reliability | Planned |
 | 10 | Deployment and Monitoring | Planned |
 
 ## 6. Project Architecture
 
-The planned architecture consists of:
+The planned end-to-end architecture consists of:
 
 1. Transaction ingestion and data validation.
 2. Data engineering and feature engineering.
 3. PostgreSQL analytics and fraud detection.
 4. Explainable machine learning.
-5. RAG-based knowledge retrieval.
-6. Multi-agent orchestration.
-7. Analyst-facing APIs and frontend.
-8. Deployment and monitoring.
+5. Document ingestion and RAG knowledge processing.
+6. Vector storage and similarity retrieval.
+7. Multi-agent fraud investigation and orchestration.
+8. Analyst-facing APIs and frontend.
+9. Deployment, monitoring and operational support.
 
 ## 7. Project Structure
+
+The repository currently contains the implemented data, database, modelling, LLM and RAG components. Additional folders will be introduced as the remaining phases are developed.
 
 ```text
 banking-fraud-intelligence-copilot/
 │
-├── api/
-├── config/
 ├── data/
 │   ├── raw/
 │   ├── processed/
-│   └── splits/
+│   ├── splits/
+│   └── knowledge_base/
+│       ├── raw/
+│       ├── processed/
+│       └── metadata/
 │
 ├── docs/
 │   ├── data/
-│   └── reports/
-│
-├── frontend/
-├── notebooks/
-├── project_documentation/
+│   ├── reports/
+│   └── rag/
 │
 ├── sql/
 │   └── analytics/
@@ -178,16 +261,17 @@ banking-fraud-intelligence-copilot/
 │       ├── data_quality/
 │       ├── database/
 │       ├── features/
-│       ├── ingestion/
-│       └── preprocessing/
+│       ├── preprocessing/
+│       ├── models/
+│       ├── llm/
+│       └── rag/
 │
 ├── tests/
 │   ├── unit/
+│   │   └── rag/
 │   └── integration/
 │
-├── deployment/
 ├── scripts/
-│
 ├── .gitignore
 ├── pyproject.toml
 ├── uv.lock
@@ -202,6 +286,8 @@ banking-fraud-intelligence-copilot/
 - uv
 - PostgreSQL 15 or compatible version
 - Git
+
+Ollama is required for the local LLM and embedding functionality.
 
 ### Clone the repository
 
@@ -229,9 +315,28 @@ uv run ruff check .
 uv run pytest -v
 ```
 
-**Dataset setup:** Obtain the PaySim dataset from its source and place the CSV at `data/raw/paysim.csv`. Dataset files are not included in this repository.
+### Local LLM setup
 
-Database configuration is required for database ingestion and analytics workflows.
+Install Ollama and download the models:
+
+```bash
+ollama pull qwen2.5:3b
+ollama pull nomic-embed-text
+```
+
+Ensure the Ollama service is running before using the local LLM and embedding clients.
+
+### Dataset setup
+
+Obtain the PaySim dataset from its source and place the CSV at:
+
+```text
+data/raw/paysim.csv
+```
+
+Dataset files are not included in this repository.
+
+Database configuration is required for database ingestion and analytics workflows. Configure credentials through environment variables; never commit passwords or `.env` files.
 
 ## 9. Data Integrity and Project Limitations
 
@@ -240,8 +345,11 @@ Database configuration is required for database ingestion and analytics workflow
 - Fraud labels are highly imbalanced.
 - Chronological evaluation is used to better reflect temporal deployment conditions.
 - Post-transaction fields are excluded from the initial pre-transaction model feature set.
-- The simulator-generated `isFlaggedFraud` field is excluded from the initial model features to avoid leakage.
+- The simulator-generated `isFlaggedFraud` field is excluded from the initial model features.
+- Some model patterns may be specific to the PaySim simulator.
 - Model predictions are decision-support signals, not definitive fraud determinations.
+- The current RAG implementation does not yet include vector retrieval or grounded answer generation.
+- The complete multi-agent workflow and production deployment are future objectives.
 
 ## 10. Project Goals
 
@@ -252,8 +360,10 @@ The final objective is to build a maintainable, modular fraud intelligence proto
 - Machine learning.
 - Explainable AI.
 - Retrieval-augmented generation.
+- Local LLM integration.
 - Multi-agent AI systems.
 - Backend and frontend development.
+- Testing and security.
 - Monitoring and deployment.
 
 ---
