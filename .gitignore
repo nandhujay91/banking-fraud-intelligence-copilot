@@ -37,3 +37,4 @@ Thumbs.db
 
 data/validation/
 models/**/*.joblib
+docs/reports/analysis/cash_out_false_negatives.csv
